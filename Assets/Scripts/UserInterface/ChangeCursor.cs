@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ChangeCursor : MonoBehaviour
@@ -7,33 +8,46 @@ public class ChangeCursor : MonoBehaviour
     public Camera playerCamera;
     public float raycastDistance = 2f;
     public LayerMask interactableLayer; // Assign the interactable layer in the Inspector
+    public LayerMask inspectLayer;
 
     [SerializeField] private GameObject normalCursor;
-    [SerializeField] private GameObject hoverCursor;
+    [SerializeField] private GameObject hoverInteractableLayerCursor;
+    [SerializeField] private GameObject hoverInspectLayerCursor;
 
     private void Start()
     {
-        normalCursor.SetActive(true);
-        hoverCursor.SetActive(false);
+        // Initialize the cursor states
+        SetCursorState(false, false, false);
     }
+
     void Update()
     {
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, raycastDistance, interactableLayer))
-        {
-            // Check if the object hit by the raycast is on the interactable layer
-            //instead of destroy change the cursor
-            //Destroy(hit.collider.gameObject);
-            normalCursor.SetActive(false);
-            hoverCursor.SetActive(true);
+        bool interactableHit = Physics.Raycast(ray, out hit, raycastDistance, interactableLayer);
+        bool inspectableHit = Physics.Raycast(ray, out hit, raycastDistance, inspectLayer);
 
+        // Determine which cursor should be active based on the raycast results
+        if (interactableHit)
+        {
+            SetCursorState(true, false, false); // Interactable cursor
+        }
+        else if (inspectableHit)
+        {
+            SetCursorState(false, true, false); // Inspectable cursor
         }
         else
         {
-            normalCursor.SetActive(true);
-            hoverCursor.SetActive(false);
+            SetCursorState(false, false, true); // Normal cursor
         }
+    }
+
+    // Helper method to set cursor states
+    private void SetCursorState(bool interactableActive, bool inspectableActive, bool normalActive)
+    {
+        normalCursor.SetActive(normalActive);
+        hoverInteractableLayerCursor.SetActive(interactableActive);
+        hoverInspectLayerCursor.SetActive(inspectableActive);
     }
 }
