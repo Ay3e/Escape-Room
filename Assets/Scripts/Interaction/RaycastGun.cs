@@ -13,6 +13,7 @@ public class RaycastGun : MonoBehaviour
     public float laserDuration = 0.05f;
     public LayerMask targetLayer; // Specify the target layer
 
+    [SerializeField] private Animator animateDoor;
     [SerializeField] private GameObject triggeredLights;
 
     private LineRenderer laserLine;
@@ -49,6 +50,8 @@ public class RaycastGun : MonoBehaviour
             //Instead of destroy turn all lights on
             //Destroy(hit.collider.gameObject); // Destroy the object hit by the laser if it's on the target layer
             triggeredLights.SetActive(true);
+            //set animator bool "OpenDoor" to true
+            animateDoor.SetBool("OpenDoor", true);
         }
         else
         {
