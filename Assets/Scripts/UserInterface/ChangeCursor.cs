@@ -11,6 +11,7 @@ public class ChangeCursor : MonoBehaviour
     public LayerMask inspectLayer;
 
     public static bool isInspectableCursorOn = false;
+    public static bool isInteractableCursorOn = false;
 
     [SerializeField] private GameObject normalCursor;
     [SerializeField] private GameObject hoverInteractableLayerCursor;
@@ -35,16 +36,19 @@ public class ChangeCursor : MonoBehaviour
         {
             SetCursorState(true, false, false); // Interactable cursor
             isInspectableCursorOn = false;
+            isInteractableCursorOn = true;
         }
         else if (inspectableHit)
         {
             SetCursorState(false, true, false); // Inspectable cursor
             isInspectableCursorOn = true;
+            isInteractableCursorOn = false;
         }
         else
         {
             SetCursorState(false, false, true); // Normal cursor
             isInspectableCursorOn = false;
+            isInteractableCursorOn = false;
         }
     }
 
